@@ -4,8 +4,7 @@
 
 <p align="start">O FoodExplorer é uma aplicação full-stack desenvolvida como parte do desafio final do curso Explorer da Rocketseat. Este projeto tem como objetivo criar um sistema de gestão de cardápio para restaurantes, permitindo aos proprietários de restaurantes adicionar, atualizar, ler e deletar produtos do seu menu de forma eficiente.</p>
 
-Deploy:
-[![Netlify Status](https://api.netlify.com/api/v1/badges/f201ef1d-b544-4052-807b-30ef31c43696/deploy-status)](https://app.netlify.com/sites/rocketnotes-challenge/deploys)
+Deploy Render: https://final-challenge-api.onrender.com
 
 <h4 align="center">Finalizado ✅😎</h4>
 
