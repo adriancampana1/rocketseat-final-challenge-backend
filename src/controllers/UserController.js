@@ -29,7 +29,7 @@ class UserController {
 
         await database.run(
             'INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)',
-            [name, email, hashedPassword, adminRole]
+            [name, email, hashedPassword, commonRole]
         );
 
         return response.status(201).json();

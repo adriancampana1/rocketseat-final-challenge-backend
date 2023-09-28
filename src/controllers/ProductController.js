@@ -37,7 +37,8 @@ class ProductController {
     }
 
     async update(request, response) {
-        const { title, description, price, ingredients } = request.body;
+        const { title, description, price, category, ingredients } =
+            request.body;
         const { productId } = request.params;
         const user_id = request.user.id;
 
@@ -51,12 +52,14 @@ class ProductController {
         product.title = title ?? product.title;
         product.description = description ?? product.description;
         product.price = price ?? product.price;
+        product.category = category ?? product.category;
 
         await database.run(
             `UPDATE products SET 
             title = ?,
             description = ?,
             price = ?,
+            category = ?,
             user_id = ?
             WHERE id = ?
             `,
@@ -64,6 +67,7 @@ class ProductController {
                 product.title,
                 product.description,
                 product.price,
+                product.category,
                 user_id,
                 productId,
             ]
@@ -121,33 +125,46 @@ class ProductController {
     }
 
     async index(request, response) {
-        const { title, ingredients } = request.query;
-        const user_id = request.user.id;
-        let products;
+        const { search } = request.query;
 
-        if (ingredients) {
-            const filterIngredients = ingredients
-                .split(',')
-                .map((ingredient) => ingredient.trim());
+        let query = knex('products').groupBy('products.id');
 
-            products = await knex('products')
-                .select(['products.id', 'products.title', 'products.user_id'])
-                .whereIn('products.id', function () {
-                    this.select('ingredients.product_id')
-                        .from('ingredients')
-                        .whereIn('ingredients.title', filterIngredients);
-                })
-                .andWhere('products.title', 'like', `%${title}%`)
-                .groupBy('products.id')
-                .orderBy('products.title');
+        if (search) {
+            query = query
+                .select([
+                    'products.id',
+                    'products.title',
+                    'products.description',
+                    'products.price',
+                    'products.category',
+                    'products.image',
+                ])
+                .leftJoin(
+                    'ingredients',
+                    'products.id',
+                    'ingredients.product_id'
+                )
+                .where(function () {
+                    this.where('products.title', 'like', `%${search}%`).orWhere(
+                        'ingredients.title',
+                        'like',
+                        `%${search}%`
+                    );
+                });
         } else {
-            products = await knex('products')
-                .where({ user_id })
-                .where('title', 'like', `%${title}%`)
-                .orderBy('title');
+            query = query.select([
+                'products.id',
+                'products.title',
+                'products.description',
+                'products.price',
+                'products.category',
+                'products.image',
+            ]);
         }
 
-        const userIngredients = await knex('ingredients').where({ user_id });
+        const products = await query;
+
+        const userIngredients = await knex('ingredients');
 
         const productsWithIngredients = products.map((product) => {
             const productIngredients = userIngredients.filter(
