@@ -36,7 +36,7 @@ $ npm run dev
 
 <p align="start">Para acessar a plataforma como administrador, deixei um usuário pré-definido que passarei abaixo, mas, caso queira criar novos usuários administradores, basta seguir as instruções deixadas no Controller de usuários.</p>
 
--   **Email:** admin
+-   **Email:** admin@gmail.com
 -   **Senha:** 123
 
 ### 🛠 Tecnologias
